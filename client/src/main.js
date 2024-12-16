@@ -1,11 +1,15 @@
 import { Candidats } from "./data/data-candidats.js";
 import { Lycees } from "./data/data-lycees.js";
 import L from "leaflet";
+
 import "./index.css";
 
 // Import des vues
 import { HeaderView } from "./ui/header/index.js";
 import { MapLyceeView } from "./ui/map_lycee/index.js"; 
+import "leaflet.markercluster";
+import "leaflet.markercluster.freezable";
+
 
 let C = {};
 
