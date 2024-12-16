@@ -22,7 +22,7 @@ let V = {
 V.init = function () {
   V.renderHeader();
 
-  MapLyceeView.render();
+  MapLyceeView.render(Lycees.getAll());
 };
 
 V.renderHeader = function () {

@@ -13,9 +13,15 @@ MapLyceeView.render = function (data) {
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
 
-  var marker = L.marker([45.83101313440399, 1.259036035081095]).addTo(map);
+  for (let i = 1; i < data.length; i++) {
+    let lycee = data[i];
 
-  marker.bindPopup("<b>Le Quick!</b><br>C'est l'épicentre de Limoges.").openPopup();
+    var marker = L.marker([lycee.latitude, lycee.longitude]).addTo(map);
+
+    marker.bindPopup(
+      `<b>${lycee.nom}</b><br>${lycee.adresse}<br>${lycee.cp} ${lycee.ville}`
+    );
+  }
 
     
 };
