@@ -18,7 +18,7 @@ MapLyceeView.render = function (dataLycees) {
     spiderfyOnMaxZoom: true,
     showCoverageOnHover: true,
     zoomToBoundsOnClick: false,
-    maxClusterRadius: 60,
+    // maxClusterRadius: 60,
     freezeAtZoom: 10 // Niveau de zoom pour les régions
   });
 
