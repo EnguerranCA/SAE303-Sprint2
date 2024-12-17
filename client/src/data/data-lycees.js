@@ -2,6 +2,7 @@ import { Candidats } from "./data-candidats.js";
 
 let dataLycee = await fetch("./src/data/json/lycees.json");
 dataLycee = await dataLycee.json();
+dataLycee.sort((a, b) => a.numero_uai.localeCompare(b.numero_uai));
 
 let dataCandidat = Candidats.getAll();
 
@@ -11,18 +12,35 @@ Lycees.getAll = function () {
   return dataLycee;
 };
 
+Lycees.binarySearch = function (lyceeCode) {
+  let min = 0;
+  let max = dataLycee.length - 1;
+  let guess;
+  while (min <= max) {
+    guess = Math.floor((min + max) / 2);
+    if (dataLycee[guess].numero_uai === lyceeCode) {
+      return dataLycee[guess];
+    } else if (dataLycee[guess].numero_uai < lyceeCode) {
+      min = guess + 1;
+    } else {
+      max = guess - 1;
+    }
+  }
+  return null;
+}
 Lycees.getLyceesAvecCandidats = function () {
   let returnedData = [];
+  let refusedData = [];
 
   for (let i = 1; i < dataCandidat.length; i++) {
     let candidat = dataCandidat[i];
 
     // On récupère le code des derniers étblissements jusqu'à trouver un lycée
-    for (let i = 0; i < 6; i++) {
-      let codeLycee = candidat.Scolarite[i].UAIEtablissementorigine;
+    for (let j = 0; j < 6; j++) {
+      let codeLycee = candidat.Scolarite[j].UAIEtablissementorigine;
 
-      // On trouve l'établissement en question
-      let lycee = dataLycee.find((lycee) => lycee.numero_uai === codeLycee);
+      // Recherche dichotomique du lycée
+      let lycee = Lycees.binarySearch(codeLycee);
 
       // Si on a trouvé un lycée, on sort de la boucle
       if (lycee) {
@@ -37,9 +55,80 @@ Lycees.getLyceesAvecCandidats = function () {
 
         break;
       }
+
+      if (j === 5) {
+        
+        refusedData.push(candidat);
+      }
     }
+  }
+  for (let refuse of refusedData) {
+    console.log(refuse.Scolarite[0].CommuneEtablissementOrigineLibelle + " " + refuse.Scolarite[0].UAIEtablissementorigine);
   }
   return returnedData;
 };
+
+Lycees.getNeoBacheliers = function () {
+  let returnedData = [];
+
+  for (let i = 1; i < dataCandidat.length; i++) {
+
+    let candidat = dataCandidat[i];
+
+    // On récupère le statut du baccaulauréat pour voir si il est en préparation ou déjà obtenu
+    if (candidat.Baccalaureat.TypeDiplomeLibelle === 'Baccalauréat en préparation') {
+      let codeLycee = candidat.Scolarite[0].UAIEtablissementorigine;
+      
+      // Recherche dichotomique du lycée
+      let lycee = Lycees.binarySearch(codeLycee);
+
+      // Si on a trouvé un lycée, on sort de la boucle
+      if (lycee) {
+        // On ajoute le lycée à la liste des lycées s'il n'y est pas déjà
+        if (!returnedData.find((lycee) => lycee.numero_uai === codeLycee)) {
+          
+          // On regarde le type de baccalauréat
+            lycee.count = {
+            generale: 0,
+            sti2d: 0,
+            other: 0
+            };
+
+            switch (candidat.Baccalaureat.Filiere) {
+            case 'Générale':
+              lycee.count.generale++;
+              break;
+            case 'STI2D':
+              lycee.count.sti2d++;
+              break;
+            default:
+              lycee.count.other++;
+              break;
+            }
+
+          returnedData.push(lycee);
+        } else {
+          // On incrémente le compteur en fonction de la filère
+          switch (candidat.Baccalaureat.SerieDiplomeCode) {
+            case 'Générale':
+              lycee.count.generale++;
+              break;
+            case 'STI2D':
+              lycee.count.sti2d++;
+              break;
+            default:
+              lycee.count.other++;
+              break;
+            }
+        }
+      } else {
+        console.log("Lycée non trouvé pour le candidat : " + candidat.Scolarite[0].CommuneEtablissementOrigineLibelle + " " + candidat.Scolarite[0].UAIEtablissementorigine);
+      }
+    }
+  }
+  console.log(returnedData);
+  return returnedData;
+};
+
 
 export { Lycees };

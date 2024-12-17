@@ -19,13 +19,17 @@ MapLyceeView.render = function (dataLycees) {
     showCoverageOnHover: true,
     zoomToBoundsOnClick: false,
     // maxClusterRadius: 60,
-    freezeAtZoom: 10 // Niveau de zoom pour les régions
+    freezeAtZoom: 10, // Niveau de zoom pour les régions
   });
 
   // On ajoute un marqueur sur la map pour chaque lycée
-  for (let i = 0; i < dataLycees.length; i++) {
+  for (let i = 1; i < dataLycees.length; i++) {
     let marker = L.marker([dataLycees[i].latitude, dataLycees[i].longitude]);
-    marker.bindPopup(`<b>${dataLycees[i].appellation_officielle}</b><br> ${dataLycees[i].count} candidats`);
+    marker.bindPopup(
+      `<b>${dataLycees[i].appellation_officielle}</b><br> ${dataLycees[i].count.generale} candidats en Générale<br> ${dataLycees[i].count.sti2d} candidats en STI2D<br> ${dataLycees[i].count.other} autres candidats`
+    );
+
+
     markers.addLayer(marker);
   }
 
@@ -33,17 +37,27 @@ MapLyceeView.render = function (dataLycees) {
   map.addLayer(markers);
 
   // Afficher le cumul des candidats dans la zone lors du clic sur un cluster
-  markers.on('clusterclick', function (a) {
-    let totalCandidats = 0;
-    a.layer.getAllChildMarkers().forEach(marker => {
-      let popupContent = marker.getPopup().getContent();
-      let count = parseInt(popupContent.match(/(\d+) candidats/)[1]);
-      totalCandidats += count;
+  markers.on("clusterclick", function (a) {
+    let totalGenerale = 0;
+    let totalSti2d = 0;
+    let totalOther = 0;
+
+    a.layer.getAllChildMarkers().forEach((marker) => {
+      const popupContent = marker.getPopup().getContent();
+      const generaleCount = parseInt(popupContent.match(/(\d+) candidats en Générale/)[1]);
+      const sti2dCount = parseInt(popupContent.match(/(\d+) candidats en STI2D/)[1]);
+      const otherCount = parseInt(popupContent.match(/(\d+) autres candidats/)[1]);
+
+      totalGenerale += generaleCount;
+      totalSti2d += sti2dCount;
+      totalOther += otherCount;
     });
 
     L.popup()
       .setLatLng(a.latlng)
-      .setContent(`Total candidats dans la zone: ${totalCandidats}`)
+      .setContent(
+        `Total candidats dans la zone:<br>Générale: ${totalGenerale}<br>STI2D: ${totalSti2d}<br>Autres: ${totalOther}`
+      )
       .openOn(map);
   });
 };

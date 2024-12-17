@@ -26,7 +26,9 @@ let V = {
 V.init = function () {
   V.renderHeader();
 
-  MapLyceeView.render(Lycees.getLyceesAvecCandidats());
+  MapLyceeView.render(Lycees.getNeoBacheliers());
+
+  Candidats.getAll();
 };
 
 V.renderHeader = function () {
@@ -37,3 +39,4 @@ V.renderHeader = function () {
 
 
 C.init();
+
