@@ -6,6 +6,8 @@ let MapLyceeView = {};
 MapLyceeView.render = function (dataLycees) {
   var map = L.map("map").setView([45.83101313440399, 1.259036035081095], 10);
 
+
+  console.log(dataLycees);
   // Import de la map
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 16,
@@ -23,7 +25,7 @@ MapLyceeView.render = function (dataLycees) {
   });
 
   // On ajoute un marqueur sur la map pour chaque lycée
-  for (let i = 1; i < dataLycees.length; i++) {
+  for (let i = 0; i < dataLycees.length; i++) {
     let marker = L.marker([dataLycees[i].latitude, dataLycees[i].longitude]);
     marker.bindPopup(
       `<b>${dataLycees[i].appellation_officielle}</b><br> ${dataLycees[i].count.generale} candidats en Générale<br> ${dataLycees[i].count.sti2d} candidats en STI2D<br> ${dataLycees[i].count.other} autres candidats`
@@ -37,7 +39,7 @@ MapLyceeView.render = function (dataLycees) {
   map.addLayer(markers);
 
   // Afficher le cumul des candidats dans la zone lors du clic sur un cluster
-  markers.on("clusterclick", function (a) {
+  markers.on("clusterclick", function (a) {   
     let totalGenerale = 0;
     let totalSti2d = 0;
     let totalOther = 0;

@@ -1,4 +1,9 @@
 #map {
   height: 60rem;
-    width: 80rem;
+  width: 80rem;
+}
+
+#mapDiv {
+  width: 80rem;
+  height: 60rem;
 }

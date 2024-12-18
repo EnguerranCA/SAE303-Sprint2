@@ -23,10 +23,13 @@
   <body class="bg-gray-100">
     <section id="header"></section>
     <div class="mapzone">
-      <div id="map"></div>
+      <div id="mapDiv">
+        <div id="map"></div>
+      </div>
       <div class="mapzone__filters">
         <h2 class="mapzone__filters__title">Type de bac</h2>
-        <input type="checkbox" data-filter="1" id="checkbox" class="mapzone__filters__checkbox" />
+        <button class="mapzone__button" id="postbac">PostBac</button>
+        <button class="mapzone__button" id="neobacheliers">Néo Bachelier</button>
 
       </div>
     </div>
@@ -52,7 +55,7 @@
     .mapzone {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: start;
       padding: 20px;
     }
 
@@ -79,5 +82,17 @@
     .mapzone__filters__checkbox {
       margin-right: 10px;
     }
+
+    .mapzone__button {
+      background-color: #0053a0;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+
   </style>
 </html>

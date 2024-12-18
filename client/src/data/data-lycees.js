@@ -1,4 +1,5 @@
 import { Candidats } from "./data-candidats.js";
+import { Lieux } from "./data-lieux.js";
 
 let dataLycee = await fetch("./src/data/json/lycees.json");
 dataLycee = await dataLycee.json();
@@ -26,7 +27,6 @@ Lycees.binarySearch = function (lyceeCode) {
       max = guess - 1;
     }
   }
-  return null;
 }
 Lycees.getLyceesAvecCandidats = function () {
   let returnedData = [];
@@ -130,5 +130,69 @@ Lycees.getNeoBacheliers = function () {
   return returnedData;
 };
 
+Lycees.getPostBac = async function () {
+  let returnedData = [];
+
+  let departements = Candidats.getDepartements();
+
+  for (let departement in departements) {
+    let postalCode = departement.padEnd(5, '0');
+
+    let location = await Lieux.fetchPostalCode(postalCode);
+
+    returnedData.push({
+      count: departements[departement].count,
+      appellation_officielle: location.nom_commune,
+      latitude: location.latitude,
+      longitude: location.longitude
+    });
+  }
+
+  console.log(returnedData);
+  return returnedData;
+};
+
 
 export { Lycees };
+
+
+// Lycees.getPostBac = async function () {
+//   let returnedData = [];
+
+//   for (let i = 1; i < dataCandidat.length; i++) {
+//     let candidat = dataCandidat[i];
+//     if (candidat.Baccalaureat.TypeDiplomeLibelle === 'Baccalauréat obtenu') {
+//       let postalCode = candidat.Scolarite[0].CommuneEtablissementOrigineCodePostal;
+
+//       if (!postalCode) {
+//         continue;
+//       }
+
+//       let location = await Lieux.fetchPostalCode(postalCode);
+//       console.log(location);
+      
+//       let existingLocation = returnedData.find(loc => loc.appellation_officielle == location.nom_commune);
+
+//       if (existingLocation) {
+//         existingLocation.count.other++;
+//       } else {
+//         existingLocation = {
+//           appellation_officielle: location.nom_commune,
+//           count: {
+//             generale: 0,
+//             sti2d: 0,
+//             other: 1
+//           },
+//           latitude: location.latitude,
+//           longitude: location.longitude
+//         };
+//         returnedData.push(existingLocation);
+//       }
+
+
+//   }
+  
+// }
+// console.log(returnedData);
+// return returnedData;
+// }
