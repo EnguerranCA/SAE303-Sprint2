@@ -7,16 +7,19 @@ Candidats.getAll = function () {
   return data;
 };
 
-Candidats.getDepartements = function () {
+Candidats.getDepartements = function (typeDiplome) {
   // Format cible : { "01" : { "count" : { "generale" : 0, "STI2D" : 0, "other" : 0 }} }
   let Index = {};
 
+
   for (let i = 0; i < data.length; i++) {
     let candidat = data[i];
-
-    if (candidat.Baccalaureat.TypeDiplomeCode == 1) {
+    let compteur = 0;
+    if (candidat.Baccalaureat.TypeDiplomeCode == typeDiplome || typeDiplome == 0) {
         let dernierEtablissement = {};
-        for (let i = 0; i < candidat.Scolarite.length; i++) {
+
+
+        for (let i = 0; i < 1; i++) {
             if (candidat.Scolarite[i].CommuneEtablissementOrigineCodePostal) {
                 dernierEtablissement = candidat.Scolarite[i];
                 break;
@@ -41,10 +44,16 @@ Candidats.getDepartements = function () {
     
     // Si le département n'est pas déjà dans l'index, on l'ajoute
     if (!Index[departement]) {
-      Index[departement] = { count: { generale: 0, sti2d: 0, other: 0 } };
+      Index[departement] = { count: { generale: 0, sti2d: 0, other: 0, postbac: 0 } };
     } 
+
+    
     // On incrémente le compteur de la filière correspondante
-    if (candidat.Baccalaureat.SerieDiplomeCode === "Générale") {
+    if (candidat.Baccalaureat.TypeDiplomeCode === 1) {
+      console.log("postbac")
+      // On incrémente le compteur de postbac si le type de diplome est 4
+      Index[departement].count.postbac++;
+    } else if (candidat.Baccalaureat.SerieDiplomeCode === "Générale") {
       Index[departement].count.generale++;
     } else if (candidat.Baccalaureat.SerieDiplomeCode === "STI2D") {
       Index[departement].count.sti2d++;
@@ -52,6 +61,8 @@ Candidats.getDepartements = function () {
       Index[departement].count.other++;
     }
     }
+
+    compteur++;
   }
     console.log(Index);
 
@@ -59,5 +70,33 @@ Candidats.getDepartements = function () {
 };
 
 Candidats.getDepartements();
+
+Candidats.formatChart = function (data, threshold) { 
+  // On définie les noms de catégories par les noms de départements
+  const departements = Object.keys(data);
+
+  // On trie les département par ordre décroissant de candidats
+
+  let seriesData = [
+    {
+      name: 'Générale',
+      data: departements.map(dept => data[dept].count.generale)
+    },
+    {
+      name: 'STI2D',
+      data: departements.map(dept => data[dept].count.sti2d)
+    },
+    {
+      name: 'Postbac',
+      data: departements.map(dept => data[dept].count.postbac)
+    },
+    {
+      name: 'Other',
+      data: departements.map(dept => data[dept].count.other)
+    }
+  ];
+
+  return seriesData;
+}
 
 export { Candidats };

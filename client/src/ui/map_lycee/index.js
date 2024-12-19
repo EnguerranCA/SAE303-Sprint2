@@ -28,7 +28,7 @@ MapLyceeView.render = function (dataLycees) {
   for (let i = 0; i < dataLycees.length; i++) {
     let marker = L.marker([dataLycees[i].latitude, dataLycees[i].longitude]);
     marker.bindPopup(
-      `<b>${dataLycees[i].appellation_officielle}</b><br> ${dataLycees[i].count.generale} candidats en Générale<br> ${dataLycees[i].count.sti2d} candidats en STI2D<br> ${dataLycees[i].count.other} autres candidats`
+      `<b>${dataLycees[i].appellation_officielle}</b><br> ${dataLycees[i].count.generale} candidats en Générale<br> ${dataLycees[i].count.sti2d} candidats en STI2D <br> ${dataLycees[i].count.postbac} candidats en Post-Bac <br> ${dataLycees[i].count.other} autres candidats`
     );
 
 
@@ -43,22 +43,25 @@ MapLyceeView.render = function (dataLycees) {
     let totalGenerale = 0;
     let totalSti2d = 0;
     let totalOther = 0;
+    let totalPostbac = 0;
 
     a.layer.getAllChildMarkers().forEach((marker) => {
       const popupContent = marker.getPopup().getContent();
       const generaleCount = parseInt(popupContent.match(/(\d+) candidats en Générale/)[1]);
       const sti2dCount = parseInt(popupContent.match(/(\d+) candidats en STI2D/)[1]);
       const otherCount = parseInt(popupContent.match(/(\d+) autres candidats/)[1]);
+      const postbacCount = parseInt(popupContent.match(/(\d+) candidats en Post-Bac/)[1]);
 
       totalGenerale += generaleCount;
       totalSti2d += sti2dCount;
       totalOther += otherCount;
+      totalPostbac += postbacCount;
     });
 
     L.popup()
       .setLatLng(a.latlng)
       .setContent(
-        `Total candidats dans la zone:<br>Générale: ${totalGenerale}<br>STI2D: ${totalSti2d}<br>Autres: ${totalOther}`
+        `Total candidats dans la zone:<br>Générale: ${totalGenerale}<br>STI2D: ${totalSti2d}<br>Post-Bac: ${totalPostbac}  <br>Autres: ${totalOther}`
       )
       .openOn(map);
   });

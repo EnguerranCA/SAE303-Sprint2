@@ -15,26 +15,28 @@
 
     <!--  Leaflet Script -->
 
-
-    <link rel="stylesheet" href="./src/css/style.css">
-    <link rel="stylesheet" href="./src/css/MarkerCluster.Default.css">
-    
+    <link rel="stylesheet" href="./src/css/style.css" />
+    <link rel="stylesheet" href="./src/css/MarkerCluster.Default.css" />
   </head>
   <body class="bg-gray-100">
     <section id="header"></section>
     <div class="mapzone">
-      <div id="mapDiv">
+      <div class="mapzone__map" id="mapDiv">
         <div id="map"></div>
       </div>
-      <div class="mapzone__filters">
-        <h2 class="mapzone__filters__title">Type de bac</h2>
-        <button class="mapzone__button" id="postbac">PostBac</button>
-        <button class="mapzone__button" id="neobacheliers">Néo Bachelier</button>
-
+      <div class="mapzone__side">
+        <div class="mapzone__filters">
+          <h2 class="mapzone__filters__title">Type de bac</h2>
+          <button class="mapzone__button" id="postbac">PostBac</button>
+          <button class="mapzone__button" id="neobacheliers">
+            Néo Bachelier
+          </button>
+        </div>
+        <div class="mapzone__chart" id="chart"></div>
       </div>
     </div>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
 
-    
     <script type="module" src="src/main.js"></script>
   </body>
   <style>
@@ -65,13 +67,20 @@
       margin-bottom: 20px;
     }
 
+    .mapzone__map {
+      width: 33%;
+    }
+
+    .mapzone__side {
+      width: 66%;
+      margin-left: 20px;
+    }
+
     .mapzone__filters {
       background-color: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
     }
 
     .mapzone__filters__title {
@@ -92,7 +101,5 @@
       margin-bottom: 10px;
       cursor: pointer;
     }
-
-
   </style>
 </html>

@@ -2,12 +2,14 @@ import { Candidats } from "./data/data-candidats.js";
 import { Lycees } from "./data/data-lycees.js";
 import { Lieux } from "./data/data-lieux.js";
 import L from "leaflet";
+import Highcharts from 'highcharts';
 
 import "./index.css";
 
 // Import des vues
 import { HeaderView } from "./ui/header/index.js";
 import { MapLyceeView } from "./ui/map_lycee/index.js";
+import { ChartView } from "./ui/chart/index.js";
 import "leaflet.markercluster";
 import "leaflet.markercluster.freezable";
 
@@ -24,6 +26,8 @@ C.init = async function () {
   
   let neoBacheliersButton = document.querySelector("#neobacheliers");
   neoBacheliersButton.addEventListener("click", C.handler_ClickNeoBacheliers);
+
+  ChartView.renderChart(Candidats.formatChart(Candidats.getDepartements(0), 10));
 };
 
 let V = {

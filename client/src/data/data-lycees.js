@@ -87,11 +87,12 @@ Lycees.getNeoBacheliers = function () {
         // On ajoute le lycée à la liste des lycées s'il n'y est pas déjà
         if (!returnedData.find((lycee) => lycee.numero_uai === codeLycee)) {
           
-          // On regarde le type de baccalauréat
+          // On regarde le type de baccalauréatx
             lycee.count = {
             generale: 0,
             sti2d: 0,
-            other: 0
+            other: 0,
+            postbac: 0
             };
 
             switch (candidat.Baccalaureat.Filiere) {
@@ -133,7 +134,7 @@ Lycees.getNeoBacheliers = function () {
 Lycees.getPostBac = async function () {
   let returnedData = [];
 
-  let departements = Candidats.getDepartements();
+  let departements = Candidats.getDepartements(1);
 
   for (let departement in departements) {
     let postalCode = departement.padEnd(5, '0');
