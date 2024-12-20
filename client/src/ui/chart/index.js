@@ -1,18 +1,14 @@
 const templateFile = await fetch("src/ui/chart/template.html");
 const template = await templateFile.text();
 
+import Highcharts from "highcharts";
+
 
 let ChartView = {};
 
   ChartView.renderChart = function (returnedData) {
   let data = returnedData.seriesData;
   let categories = returnedData.categories;
-
-  
-  console.log("renderChart");
-  console.log(data);
-  console.log(categories);
-
 
   Highcharts.chart('chart', {
     chart: {
@@ -53,19 +49,6 @@ let ChartView = {};
 
 ChartView.render = async function (data) {
   let topChart = template;
-
-  // let optionsFormatted = "";
-  // for (let option of data) {
-  //   let newOption = template_option.replace("{{id}}", option.id);
-  //   newOption = newOption.replace("{{id}}", option.id);
-
-  //   newOption = newOption.replace("{{name}}", option.name);
-  //   optionsFormatted += newOption;
-  // }
-
-  // topChart = topChart.replace("{{option}}", optionsFormatted);
-
-  // document.getElementById("data").innerHTML += topChart;
 
   return topChart;
 };

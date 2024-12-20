@@ -18,26 +18,26 @@ let C = {};
 C.init = async function () {
   await V.init();
 
-  
-
   // On ajoute un listener sur les boutons pour afficher les lycées
   let postBacButton = document.querySelector("#postbac");
-  postBacButton.addEventListener("click", C.handler_ClickPostBac);
+  postBacButton.addEventListener("change", C.handler_CheckBox);
 
   let neoBacheliersButton = document.querySelector("#neobacheliers");
-  neoBacheliersButton.addEventListener("click", C.handler_ClickNeoBacheliers);
-
-  let tousButton = document.querySelector("#tous");
-  tousButton.addEventListener("click", C.handler_ClickTous);
+  neoBacheliersButton.addEventListener("change", C.handler_CheckBox);
 
   let thresholdSlider = document.querySelector("#threshold");
   thresholdSlider.addEventListener("input", C.handler_SliderThreshold);
 
+  let radiusSlider = document.querySelector("#radius");
+  radiusSlider.addEventListener("input", C.handler_SliderRadius);
 
-  
+
   ChartView.renderChart(
     Candidats.formatChart(Candidats.getDepartements(0), 10)
   );
+
+  // On rend une première carte à l'arrivée
+  C.handler_SliderRadius();
 };
 
 let V = {
@@ -54,6 +54,7 @@ V.clearMap = function () {
 
 V.init = async function () {
   V.renderHeader();
+  MapLyceeView.init
 };
 
 V.renderHeader = function () {
@@ -65,15 +66,10 @@ C.handler_ClickPostBac = function () {
   MapLyceeView.render(Lycees.getPostBac());
 };
 
-C.handler_ClickNeoBacheliers = function () {
-  V.clearMap();
-  MapLyceeView.render(Lycees.getNeoBacheliers());
-};
-
-C.handler_ClickTous = function () {
-  V.clearMap();
-  radius = document.querySelector("#radius").value;
-  MapLyceeView.render(Lycees.filtrerParDistance(Lycees.getAllLieux(),radius),radius);
+C.handler_CheckBox = function () {
+  let postbac = document.querySelector("#postbac").checked;
+  let neoBacheliers = document.querySelector("#neobacheliers").checked;
+  selectSeries(postbac, neoBacheliers);
 };
 
 C.handler_SliderThreshold = function () {
@@ -81,9 +77,47 @@ C.handler_SliderThreshold = function () {
   ChartView.renderChart(
     Candidats.formatChart(Candidats.getDepartements(0), threshold)
   );
-  
+
   let thresholdValue = document.querySelector("#thresholdValue");
   thresholdValue.innerHTML = threshold;
+};
+
+C.handler_SliderRadius = function () {
+  radius = document.querySelector("#radius").value;
+  let radiusValue = document.querySelector("#radiusValue");
+  radiusValue.innerHTML = radius;
+  selectSeries(
+    document.querySelector("#postbac").checked,
+    document.querySelector("#neobacheliers").checked
+  );
 }
+
+// Fonction pour afficher les lycées en fonction des séries demandées
+let selectSeries = function (postbac, neoBacheliers) {
+  if (postbac && neoBacheliers) {
+    V.clearMap();
+    radius = document.querySelector("#radius").value;
+    MapLyceeView.render(
+      Lycees.filtrerParDistance(Lycees.getAllLieux(), radius),
+      radius
+    );
+  } else if (neoBacheliers) {
+    V.clearMap();
+    MapLyceeView.render(
+      Lycees.filtrerParDistance(Lycees.getNeoBacheliers(), radius),
+      radius
+    );
+  } else if (postbac) {
+    V.clearMap();
+    MapLyceeView.render(
+      Lycees.filtrerParDistance(Lycees.getPostBac(), radius),
+      radius
+    );
+  } else {
+    V.clearMap();
+    MapLyceeView.render([], radius);
+  }
+};
+
 
 C.init();

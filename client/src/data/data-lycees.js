@@ -131,8 +131,6 @@ let distanceVolDoiseau = function(lat_a, lon_a, lat_b, lon_b)
 
 
 Lycees.filtrerParDistance = function (data, radius) {
-  console.log(radius);
-  console.log(data);
   // On compare la distance au centre limoges
   return data.filter((lycee) => {
     lycee.distance = distanceVolDoiseau(lycee.latitude, lycee.longitude, 45.83101313440399, 1.259036035081095);
@@ -191,43 +189,3 @@ Lycees.getPostBac();
 
 
 export { Lycees };
-
-// Lycees.getPostBac = async function () {
-//   let returnedData = [];
-
-//   for (let i = 1; i < dataCandidat.length; i++) {
-//     let candidat = dataCandidat[i];
-//     if (candidat.Baccalaureat.TypeDiplomeLibelle === 'Baccalauréat obtenu') {
-//       let postalCode = candidat.Scolarite[0].CommuneEtablissementOrigineCodePostal;
-
-//       if (!postalCode) {
-//         continue;
-//       }
-
-//       let location = await Lieux.fetchPostalCode(postalCode);
-//       console.log(location);
-
-//       let existingLocation = returnedData.find(loc => loc.appellation_officielle == location.nom_commune);
-
-//       if (existingLocation) {
-//         existingLocation.count.other++;
-//       } else {
-//         existingLocation = {
-//           appellation_officielle: location.nom_commune,
-//           count: {
-//             generale: 0,
-//             sti2d: 0,
-//             other: 1
-//           },
-//           latitude: location.latitude,
-//           longitude: location.longitude
-//         };
-//         returnedData.push(existingLocation);
-//       }
-
-//   }
-
-// }
-// console.log(returnedData);
-// return returnedData;
-// }

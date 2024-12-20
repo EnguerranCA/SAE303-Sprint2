@@ -12,7 +12,6 @@ Candidats.getAll = function () {
 
 
 Candidats.getDepartements = function (typeDiplome) {
-  // Format cible : { "01" : { "count" : { "generale" : 0, "STI2D" : 0, "other" : 0 }, "nom" : Ain, "code": 01} }
   let Index = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -58,9 +57,6 @@ Candidats.getDepartements = function (typeDiplome) {
       Index[departement].count.other++;
     }
     }
-
-    console.log(Index);
-
     return Index;
 };
 

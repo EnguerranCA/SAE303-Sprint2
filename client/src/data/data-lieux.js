@@ -33,7 +33,15 @@ Lieux.getDepartementName =  function (departementCode) {
 Lieux.getPostalCode =  function (postalCode) {
   // Si le code postal ne fait pas 5 caractères, on le complète avec des 0 
   postalCode = postalCode.toString().padStart(5, '0');
-  let result =  binarySearch(postalCode);
+  
+  // Modifier le code postal selon les règles spécifiées
+  if (postalCode.startsWith('97')) {
+    postalCode = postalCode.substring(0, 3) + '00';
+  } else {
+    postalCode = postalCode.substring(0, 2) + '000';
+  }
+  
+  let result = binarySearch(postalCode);
   if (result) {
     return {
       appellation_officielle: result.nom_departement,

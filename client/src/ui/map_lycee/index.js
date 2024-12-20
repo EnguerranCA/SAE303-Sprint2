@@ -4,10 +4,8 @@ const template = await templateFile.text();
 let MapLyceeView = {};
 
 MapLyceeView.render = function (dataLycees, radius) {
-  var map = L.map("map").setView([45.83101313440399, 1.259036035081095], 10);
+  let map = L.map("map").setView([45.83101313440399, 1.259036035081095], 10);
 
-
-  console.log(dataLycees);
   // Import de la map
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 16,
@@ -16,7 +14,7 @@ MapLyceeView.render = function (dataLycees, radius) {
   }).addTo(map);
 
   // On crée un groupe de clusters
-  var markers = L.markerClusterGroup({
+  let markers = L.markerClusterGroup({
     spiderfyOnMaxZoom: true,
     showCoverageOnHover: true,
     zoomToBoundsOnClick: false,
@@ -31,12 +29,11 @@ MapLyceeView.render = function (dataLycees, radius) {
       `<b>${dataLycees[i].appellation_officielle}</b><br> ${dataLycees[i].count.generale} candidats en Générale<br> ${dataLycees[i].count.sti2d} candidats en STI2D <br> ${dataLycees[i].count.postbac} candidats en Post-Bac <br> ${dataLycees[i].count.other} autres candidats`
     );
 
-
     markers.addLayer(marker);
   }
 
   // On crée un cercle centré sur Limoges de rayon Radius kilomètres
-  var circle = L.circle([45.83101313440399, 1.259036035081095], {
+  let circle = L.circle([45.83101313440399, 1.259036035081095], {
     color: "blue",
     fillColor: "blue",
     fillOpacity: 0.1,
@@ -47,7 +44,7 @@ MapLyceeView.render = function (dataLycees, radius) {
   map.addLayer(markers);
 
   // Afficher le cumul des candidats dans la zone lors du clic sur un cluster
-  markers.on("clusterclick", function (a) {   
+  markers.on("clusterclick", function (a) {
     let totalGenerale = 0;
     let totalSti2d = 0;
     let totalOther = 0;
@@ -55,10 +52,18 @@ MapLyceeView.render = function (dataLycees, radius) {
 
     a.layer.getAllChildMarkers().forEach((marker) => {
       const popupContent = marker.getPopup().getContent();
-      const generaleCount = parseInt(popupContent.match(/(\d+) candidats en Générale/)[1]);
-      const sti2dCount = parseInt(popupContent.match(/(\d+) candidats en STI2D/)[1]);
-      const otherCount = parseInt(popupContent.match(/(\d+) autres candidats/)[1]);
-      const postbacCount = parseInt(popupContent.match(/(\d+) candidats en Post-Bac/)[1]);
+      const generaleCount = parseInt(
+        popupContent.match(/(\d+) candidats en Générale/)[1]
+      );
+      const sti2dCount = parseInt(
+        popupContent.match(/(\d+) candidats en STI2D/)[1]
+      );
+      const otherCount = parseInt(
+        popupContent.match(/(\d+) autres candidats/)[1]
+      );
+      const postbacCount = parseInt(
+        popupContent.match(/(\d+) candidats en Post-Bac/)[1]
+      );
 
       totalGenerale += generaleCount;
       totalSti2d += sti2dCount;
@@ -66,6 +71,7 @@ MapLyceeView.render = function (dataLycees, radius) {
       totalPostbac += postbacCount;
     });
 
+    // On crée la popup
     L.popup()
       .setLatLng(a.latlng)
       .setContent(
@@ -74,5 +80,4 @@ MapLyceeView.render = function (dataLycees, radius) {
       .openOn(map);
   });
 };
-
 export { MapLyceeView };
