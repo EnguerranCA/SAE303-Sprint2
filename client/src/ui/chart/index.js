@@ -4,9 +4,15 @@ const template = await templateFile.text();
 
 let ChartView = {};
 
-  ChartView.renderChart = async function (data) {
-  const categories = Object.keys(data);
+  ChartView.renderChart = function (returnedData) {
+  let data = returnedData.seriesData;
+  let categories = returnedData.categories;
+
   
+  console.log("renderChart");
+  console.log(data);
+  console.log(categories);
+
 
   Highcharts.chart('chart', {
     chart: {
@@ -39,7 +45,7 @@ let ChartView = {};
         }
       }
     },
-    series: data
+    series: data,
   });
 
 

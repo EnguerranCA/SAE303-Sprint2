@@ -31,8 +31,15 @@
           <button class="mapzone__button" id="neobacheliers">
             Néo Bachelier
           </button>
+          <button class="mapzone__button" id="tous">Tous</button>
+
+
         </div>
+
+        <input type="range" min="1" max="60" value="3" class="mapzone__slider" id="threshold">
+        <p class="mapzone__sliderlabel">Minimum de candidats : <span id="thresholdValue" >3</span></p>
         <div class="mapzone__chart" id="chart"></div>
+        
       </div>
     </div>
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -101,5 +108,46 @@
       margin-bottom: 10px;
       cursor: pointer;
     }
+
+
+    .mapzone__slider {
+      width: 100%;
+      margin-top: 20px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 10px;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .mapzone__slider:hover {
+      opacity: 1;
+    }
+
+    .mapzone__slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #0053a0;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .mapzone__slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #0053a0;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .mapzone__sliderlabel {
+      margin-top: 10px;
+    }
+
+
+
   </style>
 </html>

@@ -7,6 +7,49 @@ dataLycee.sort((a, b) => a.numero_uai.localeCompare(b.numero_uai));
 
 let dataCandidat = Candidats.getAll();
 
+//  On modifie dataLycee pour ajouter à chaque lycée où il y a des candidats le nombre de candidats
+
+for (let candidat of dataCandidat) {
+  // Si le candidat est en préparation de baccalauréat, on regarde le lycée d'origine et on modifie son count si il est dans la liste
+  if (
+    candidat.Baccalaureat.TypeDiplomeLibelle === "Baccalauréat en préparation"
+  ) {
+    let codeLycee = candidat.Scolarite[0].UAIEtablissementorigine;
+    let lycee = dataLycee.find((lycee) => lycee.numero_uai === codeLycee);
+    if (lycee) {
+      // Si le lycée n'a pas de count, on l'initialise
+      if (!lycee.count) {
+        lycee.count = {
+          generale: 0,
+          sti2d: 0,
+          other: 0,
+          postbac: 0,
+        };
+      }
+      // On incrémente le compteur en fonction de la filière
+      switch (candidat.Baccalaureat.SerieDiplomeCode) {
+        case "Générale":
+          lycee.count.generale++;
+          break;
+        case "STI2D":
+          lycee.count.sti2d++;
+          break;
+        default:
+          lycee.count.other++;
+          break;
+      }
+    }
+  }
+
+  // Si le candidat a déjà obtenu son baccalauréat, on regarde le lycée d'origine et on modifie son count si il est dans la liste
+
+  // Si le candidat est un post bac, on regarde la dernière ville où il a étudié et on récupère le code postal pour trouver le département et récupérer la latitude et longitude
+  // Lycees.getPostBac()
+}
+
+// On enlève les lycées qui n'ont pas de candidats
+dataLycee = dataLycee.filter((lycee) => lycee.count);
+
 let Lycees = {};
 
 Lycees.getAll = function () {
@@ -27,7 +70,7 @@ Lycees.binarySearch = function (lyceeCode) {
       max = guess - 1;
     }
   }
-}
+};
 Lycees.getLyceesAvecCandidats = function () {
   let returnedData = [];
   let refusedData = [];
@@ -57,105 +100,69 @@ Lycees.getLyceesAvecCandidats = function () {
       }
 
       if (j === 5) {
-        
         refusedData.push(candidat);
       }
     }
   }
   for (let refuse of refusedData) {
-    console.log(refuse.Scolarite[0].CommuneEtablissementOrigineLibelle + " " + refuse.Scolarite[0].UAIEtablissementorigine);
   }
   return returnedData;
 };
 
+Lycees.trierParRayon = function (dataCandidat, rayon) {
+  
+}
+
 Lycees.getNeoBacheliers = function () {
+  return dataLycee;
+};
+
+Lycees.getPostBac = function () {
   let returnedData = [];
 
-  for (let i = 1; i < dataCandidat.length; i++) {
+  let candidats = Candidats.getPostBacCandidats();
 
-    let candidat = dataCandidat[i];
+  for (let candidat of candidats) {
+    if (candidat.Scolarite[0].CommuneEtablissementOrigineCodePostal) {
+      let location = Lieux.getPostalCode(
+        candidat.Scolarite[0].CommuneEtablissementOrigineCodePostal
+      );
 
-    // On récupère le statut du baccaulauréat pour voir si il est en préparation ou déjà obtenu
-    if (candidat.Baccalaureat.TypeDiplomeLibelle === 'Baccalauréat en préparation') {
-      let codeLycee = candidat.Scolarite[0].UAIEtablissementorigine;
-      
-      // Recherche dichotomique du lycée
-      let lycee = Lycees.binarySearch(codeLycee);
+      let existingLocation = returnedData.find(
+        (loc) => loc.code_departement === location.code_departement
+      );
 
-      // Si on a trouvé un lycée, on sort de la boucle
-      if (lycee) {
-        // On ajoute le lycée à la liste des lycées s'il n'y est pas déjà
-        if (!returnedData.find((lycee) => lycee.numero_uai === codeLycee)) {
-          
-          // On regarde le type de baccalauréatx
-            lycee.count = {
+      if (existingLocation) {
+        existingLocation.count.postbac++;
+      } else {
+        returnedData.push({
+          count: {
             generale: 0,
             sti2d: 0,
             other: 0,
-            postbac: 0
-            };
-
-            switch (candidat.Baccalaureat.Filiere) {
-            case 'Générale':
-              lycee.count.generale++;
-              break;
-            case 'STI2D':
-              lycee.count.sti2d++;
-              break;
-            default:
-              lycee.count.other++;
-              break;
-            }
-
-          returnedData.push(lycee);
-        } else {
-          // On incrémente le compteur en fonction de la filère
-          switch (candidat.Baccalaureat.SerieDiplomeCode) {
-            case 'Générale':
-              lycee.count.generale++;
-              break;
-            case 'STI2D':
-              lycee.count.sti2d++;
-              break;
-            default:
-              lycee.count.other++;
-              break;
-            }
-        }
-      } else {
-        console.log("Lycée non trouvé pour le candidat : " + candidat.Scolarite[0].CommuneEtablissementOrigineLibelle + " " + candidat.Scolarite[0].UAIEtablissementorigine);
+            postbac: 1,
+          },
+          appellation_officielle: location.appellation_officielle,
+          code_departement: location.code_departement,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        });
       }
     }
   }
-  console.log(returnedData);
   return returnedData;
 };
 
-Lycees.getPostBac = async function () {
-  let returnedData = [];
+Lycees.getAllLieux = function () {
 
-  let departements = Candidats.getDepartements(1);
+  let returned = Lycees.getPostBac().concat(Lycees.getNeoBacheliers());
+  return returned;
+}
 
-  for (let departement in departements) {
-    let postalCode = departement.padEnd(5, '0');
-
-    let location = await Lieux.fetchPostalCode(postalCode);
-
-    returnedData.push({
-      count: departements[departement].count,
-      appellation_officielle: location.nom_commune,
-      latitude: location.latitude,
-      longitude: location.longitude
-    });
-  }
-
-  console.log(returnedData);
-  return returnedData;
-};
+Lycees.getPostBac();
 
 
 export { Lycees };
-
 
 // Lycees.getPostBac = async function () {
 //   let returnedData = [];
@@ -171,7 +178,7 @@ export { Lycees };
 
 //       let location = await Lieux.fetchPostalCode(postalCode);
 //       console.log(location);
-      
+
 //       let existingLocation = returnedData.find(loc => loc.appellation_officielle == location.nom_commune);
 
 //       if (existingLocation) {
@@ -190,9 +197,8 @@ export { Lycees };
 //         returnedData.push(existingLocation);
 //       }
 
-
 //   }
-  
+
 // }
 // console.log(returnedData);
 // return returnedData;

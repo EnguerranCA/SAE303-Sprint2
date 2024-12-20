@@ -4,12 +4,11 @@ let dataLieux = await fetch("./src/data/json/codespostaux.json");
 dataLieux = await dataLieux.json();
 dataLieux.sort((a, b) => a.code_postal.toString().padStart(6, '0').localeCompare(b.code_postal.toString().padStart(6, '0')));
 
-console.log(dataLieux);
 
 
 let Lieux = {};
 
-Lieux.binarySearch = function (postalCode) {
+let binarySearch = function (postalCode) {
   let min = 0;
   let max = dataLieux.length - 1;
   let guess;
@@ -25,20 +24,29 @@ Lieux.binarySearch = function (postalCode) {
   }
 }
 
+Lieux.getDepartementName =  function (departementCode) {
+  let departement =  binarySearch(postalCode);
+  return departement.nom_departement;
+}
 
 
-Lieux.fetchPostalCode = async function (postalCode) {
-  let result = await Lieux.binarySearch(postalCode);
+Lieux.getPostalCode =  function (postalCode) {
+  // Si le code postal ne fait pas 5 caractères, on le complète avec des 0 
+  postalCode = postalCode.toString().padStart(5, '0');
+  let result =  binarySearch(postalCode);
   if (result) {
     return {
-      nom_commune: result.nom_commune,
+      appellation_officielle: result.nom_departement,
+      code_departement: result.code_departement,
       latitude: result.latitude,
       longitude: result.longitude,
     };
   } else {
     console.log("Code postal non trouvé : " + postalCode);
     return {
-      nom_commune: "Inconnu",
+      nom_departement: "Inconnu",
+      code_departement: "0",
+
       latitude: 0,
       longitude: 0,
     };
