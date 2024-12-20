@@ -12,11 +12,13 @@ import { MapLyceeView } from "./ui/map_lycee/index.js";
 import { ChartView } from "./ui/chart/index.js";
 import "leaflet.markercluster";
 import "leaflet.markercluster.freezable";
-
+let radius = 10;
 let C = {};
 
 C.init = async function () {
   await V.init();
+
+  
 
   // On ajoute un listener sur les boutons pour afficher les lycées
   let postBacButton = document.querySelector("#postbac");
@@ -31,6 +33,8 @@ C.init = async function () {
   let thresholdSlider = document.querySelector("#threshold");
   thresholdSlider.addEventListener("input", C.handler_SliderThreshold);
 
+
+  
   ChartView.renderChart(
     Candidats.formatChart(Candidats.getDepartements(0), 10)
   );
@@ -68,7 +72,8 @@ C.handler_ClickNeoBacheliers = function () {
 
 C.handler_ClickTous = function () {
   V.clearMap();
-  MapLyceeView.render(Lycees.getAllLieux());
+  radius = document.querySelector("#radius").value;
+  MapLyceeView.render(Lycees.filtrerParDistance(Lycees.getAllLieux(),radius),radius);
 };
 
 C.handler_SliderThreshold = function () {

@@ -3,7 +3,7 @@ const template = await templateFile.text();
 
 let MapLyceeView = {};
 
-MapLyceeView.render = function (dataLycees) {
+MapLyceeView.render = function (dataLycees, radius) {
   var map = L.map("map").setView([45.83101313440399, 1.259036035081095], 10);
 
 
@@ -34,6 +34,14 @@ MapLyceeView.render = function (dataLycees) {
 
     markers.addLayer(marker);
   }
+
+  // On crée un cercle centré sur Limoges de rayon Radius kilomètres
+  var circle = L.circle([45.83101313440399, 1.259036035081095], {
+    color: "blue",
+    fillColor: "blue",
+    fillOpacity: 0.1,
+    radius: radius * 1000,
+  }).addTo(map);
 
   // On ajoute le groupe de clusters à la map
   map.addLayer(markers);

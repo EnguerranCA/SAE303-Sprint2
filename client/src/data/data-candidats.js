@@ -70,7 +70,6 @@ Candidats.getPostBacCandidats = function (radius) {
 }
 
 
-
 Candidats.formatChart = function (data, threshold) { 
   let departements = []
 
