@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enguerran CA SAE303-2</title>
+    <meta name="description" content="Carte interactive pour visualiser les données de candidats postbac et néo bacheliers." />
+    <meta name="keywords" content="carte, candidats, postbac, néo bacheliers, statistiques" />
+
+    <!-- CSS Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <script type="module" crossorigin src="./assets/index-ZDw6Jkdi.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cjjb-SLU.css">
+  </head>
+  <body class="bg-gray-100">
+    <header id="header">
+    </header>
+    <main>
+      <section class="mapzone">
+        <div class="mapzone__map" id="mapDiv">
+          <div id="map"></div>
+        </div>
+        <aside class="mapzone__side">
+          <div class="mapzone__filters">
+            <h2 class="mapzone__filters__title">Rayon</h2>
+            <label for="radius">Rayon :</label>
+            <input type="range" min="1" max="650" value="50" class="mapzone__slider" id="radius" aria-valuemin="1" aria-valuemax="650" aria-valuenow="50" />
+            <p class="mapzone__sliderlabel">Rayon : <span id="radiusValue">3</span>km</p>
+          </div>
+          <div class="mapzone__filters">
+            <h2 class="mapzone__filters__title">Type de bac</h2>
+            <label for="postbac">
+              <input type="checkbox" class="mapzone__filters__checkbox" id="postbac" />
+              PostBac
+            </label>
+            <label for="neobacheliers">
+              <input type="checkbox" class="mapzone__filters__checkbox" id="neobacheliers" />
+              Néo Bachelier
+            </label>
+          </div>
+          <div class="mapzone__filters">
+            <h2 class="mapzone__filters__title">Statistiques</h2>
+            <label for="threshold">Minimum de candidats :</label>
+            <input type="range" min="1" max="60" value="3" class="mapzone__slider" id="threshold" aria-valuemin="1" aria-valuemax="60" aria-valuenow="3" />
+            <p class="mapzone__sliderlabel">Minimum de candidats : <span id="thresholdValue">3</span></p>
+            <div class="mapzone__chart" id="chart" role="img" aria-label="Graphique des statistiques"></div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+  </body>
+</html>
